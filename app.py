@@ -20,24 +20,45 @@ def get_random_id(length=8)->str:
 @app.route('/', methods=['POST'], cors=True)
 def get_presigned_url():
     '''returns the presigned url for uploading file to the s3 bucket'''
-    file_spec = app.current_request.json_body
-    name = get_random_id() + '.' + file_spec['name'].split('.')[1]
-
+    body = app.current_request.json_body
+    name = get_random_id() + '.' + body['name'].split('.')[1]
     try: 
-        result = {'url': s3_client.generate_presigned_url(ClientMethod ='put_object',
-                                                          Params = {'Bucket': 'imessage-viz',
-                                                                    'Key': 'f/' + name,
-                                                                    'ContentType': file_spec['type']
-                                                                   },
-                                                          ExpiresIn = 30
+        result = {
+                  'url': s3_client.generate_presigned_url(
+                                                          ClientMethod = 'put_object',
+                                                          Params       = {
+                                                                          'Bucket': 'imessage-viz',
+                                                                          'Key': name,
+                                                                          'ContentType': body['type']
+                                                                         },
+                                                          ExpiresIn    = 3600
                                                          ),
                   'name:': name
                  }
     except ClientError as e:
         logging.error(e)
-        return {"error": "could not generate s3 presigned url"}
+        result = {"error": "could not generate s3 presigned url"}
+        response = {
+                    'statusCode': 69,
+                    'headers': {
+                                'Access-Control-Allow-Headers': 'Content-Type',
+                                'Access-Control-Allow-Origin': '*',
+                                'Access-Control-Allow-Methods': 'OPTIONS, POST, PUT'
+                               },
+                    'body': result
+                   }
 
-    return result
+    response = {
+                'statusCode': 200,
+                'headers': {
+                            'Access-Control-Allow-Headers': 'Content-Type',
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Methods': 'OPTIONS, POST, PUT'
+                           },
+                'body': result
+               }
+
+    return response
 
 
 # The view function above will return {"hello": "world"}
