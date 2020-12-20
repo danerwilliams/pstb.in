@@ -7,7 +7,7 @@ from botocore.exceptions import ClientError
 from chalice import Chalice
 
 
-app = Chalice(app_name='imessage-viz')
+app = Chalice(app_name='pstbin')
 s3_client = boto3.client('s3', region_name='us-west-1')
 
 
@@ -27,7 +27,7 @@ def get_presigned_url():
                   'url': s3_client.generate_presigned_url(
                                                           ClientMethod = 'put_object',
                                                           Params       = {
-                                                                          'Bucket': 'imessage-viz',
+                                                                          'Bucket': 'pstbin',
                                                                           'Key': name,
                                                                           'ContentType': body['type']
                                                                          },
