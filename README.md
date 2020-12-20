@@ -1,5 +1,5 @@
-# imessage-viz
-> Site for making visualizations of iMessage data
+# pstb.in
+> Paste bin and url shortener
 
 
 ## Configurations
@@ -14,7 +14,7 @@
             "Effect": "Allow",
             "Principal": "*",
             "Action": "s3:PutObject",
-            "Resource": "arn:aws:s3:::imessage-viz/*"
+            "Resource": "arn:aws:s3:::pstbin/*"
         }
     ]
 }
