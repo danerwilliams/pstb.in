@@ -36,3 +36,6 @@
     }
 ]
 ```
+
+## Troubleshooting
+* Chalice may cause permissions issues with the generated lambda functions, see [this issue](https://github.com/aws/chalice/issues/1606)
