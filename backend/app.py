@@ -91,14 +91,18 @@ def get_s3_presigned_url():
     body = app.current_request.json_body
 
     length = get_id_length('f') # pasted files are stored in the f folder of bucket
-    name = get_random_id(length)
-
-    if '.' in body['name']: #give same extension as uploaded file if there is one
-        name += '.' + body['name'].split('.')[1]
+    while True:
+        name = get_random_id(length) 
+        if '.' in body['name']:
+            name += '.' + body['name'].split('.')[1]
+        try: # name is already used
+            boto3.resource('s3').Object('www.pstb.in', name).load()
+        except ClientError as e: # name hasn't been used yet
+            break
 
     try: 
         result = {
-                  'url': s3.generate_presigned_url(
+                  'signed_url': s3.generate_presigned_url(
                                                     ClientMethod = 'put_object',
                                                     Params       = {
                                                                     'Bucket': 'www.pstb.in',
@@ -107,10 +111,9 @@ def get_s3_presigned_url():
                                                                     },
                                                     ExpiresIn    = 3600
                                                   ),
-                  'name:': name
+                  'url': 'pstb.in/f/' + name
                  }
     except ClientError as e:
-        logging.error(e)
         result = {"error": "could not generate s3 presigned url"}
         response = {
                     'statusCode': 69,
