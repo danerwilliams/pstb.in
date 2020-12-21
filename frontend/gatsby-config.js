@@ -5,11 +5,6 @@ module.exports = {
   },
 
   plugins: [
-    {
-        resolve: `gatsby-plugin-s3`,
-        options: {
-            bucketName: 'dane-test-bucket',
-        },
-    },
+
   ]
 };

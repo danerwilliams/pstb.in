@@ -12,13 +12,11 @@
     "start": "gatsby develop",
     "build": "gatsby build",
     "serve": "gatsby serve",
-    "clean": "gatsby clean",
-    "deploy": "gatsby-plugin-s3 deploy"
+    "clean": "gatsby clean"
   },
   "license": "0BSD",
   "dependencies": {
     "gatsby": "^2.26.1",
-    "gatsby-plugin-s3": "^0.3.8",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   }
