@@ -27,7 +27,7 @@ def get_id_length(folder = '')->int:
         capacity = sum(1 for _ in bucket.objects.filter(Prefix= folder + '/')) # counts number of objects in a specified folder
     else:
         capacity = sum(1 for _ in bucket.objects.filter(Delimiter='/')) # counts number of objects in root of bucket
-    print('capacity', capacity)
+
     recommended_length = 8
     # C^R(n,r) = (n+r-1)!/r!(n-1)!  , where there are n=26 letters + 10 integers and r = length
     max_capacities = [666, 8436, 82251, 658008, 4496388, 26978328]
@@ -66,8 +66,12 @@ def get_shortened_url():
 
     # randomly generate new id until one is available
     length = get_id_length() # url redirect objects are stored in top level folder of bucket
-    print('length', length)
-    short = get_random_id(length)
+    while True:
+        short = get_random_id(length)
+        try: # name is already used
+            boto3.resource('s3').Object('www.pstb.in', short).load()
+        except ClientError as e: # name hasn't been used yet
+            break
 
     target_url = format_target_url(body)
     if not target_url:
