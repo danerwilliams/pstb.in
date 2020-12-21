@@ -1,5 +1,5 @@
 # pstb.in
-> Paste bin and url shortener
+> Paste bin and url shortener made in serverless AWS
 
 
 ## Configurations
