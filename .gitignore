@@ -4,4 +4,3 @@ __pycache__/
 /backend/.chalice/deployed
 /frontend/node_modules
 /frontend/.cache
-/frontend/public
