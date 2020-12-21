@@ -1,13 +1,15 @@
 ######################
 # Imports
 ######################
-import json
 import logging
 import random
 import string
+import re
+import requests
 import boto3
 from botocore.exceptions import ClientError
 from chalice import Chalice
+
 
 
 ########################
@@ -37,20 +39,35 @@ def get_id_length(folder = '')->int:
 
     return recommended_length
 
-def get_random_id(length=2)->str:
+def get_random_id(length=8)->str:
     '''Generates a random id for the file to be uploaded'''
     chars = string.ascii_lowercase + string.digits
     return ''.join(random.choice(chars) for _ in range(length))
 
-def format_target_url(source)->str:
-    '''cleans up input url aka github.com returns https://github.com and invalid;url.com returns None'''
-    
+def format_target_url(url)->str:
+    '''cleans up input url aka github.com returns https://github.com, return None if invalid url'''
+    regex = re.compile(r'(https?://)?(.*)')
+    match = regex.search(url)
+    if match:
+        url = match.group(2)
+    else:
+        return None
+
+    try: #first try https
+        requests.get('https://' + url)
+        return 'https://' + url
+    except:
+        try: # then try http
+            requests.get('http://' + url)
+            return 'http://' + url
+        except: # otherwise invalid
+            return None
 
 
 ########################
 # API Routes
 ########################
-@app.route('/short', methods=['POST'], cors=True, content_types=['application/x-www-form-urlencoded'])
+@app.route('/shorten', methods=['POST'], cors=True, content_types=['application/x-www-form-urlencoded'])
 def get_shortened_url():
     '''returns shortened url for the desired '''
     # post request data
@@ -64,7 +81,7 @@ def get_shortened_url():
         response = s3.upload_file('/tmp/test', 'www.pstb.in', short, ExtraArgs = {'WebsiteRedirectLocation': body})
     return {'body': body}
 
-@app.route('/', methods=['POST'], cors=True)
+@app.route('/upload', methods=['POST'], cors=True)
 def get_s3_presigned_url():
     '''returns the presigned url for uploading file to the s3 bucket'''
     body = app.current_request.json_body
@@ -78,14 +95,14 @@ def get_s3_presigned_url():
     try: 
         result = {
                   'url': s3.generate_presigned_url(
-                                                          ClientMethod = 'put_object',
-                                                          Params       = {
-                                                                          'Bucket': 'www.pstb.in',
-                                                                          'Key': 'f/' + name,
-                                                                          'ContentType': body['type']
-                                                                         },
-                                                          ExpiresIn    = 3600
-                                                         ),
+                                                    ClientMethod = 'put_object',
+                                                    Params       = {
+                                                                    'Bucket': 'www.pstb.in',
+                                                                    'Key': 'f/' + name,
+                                                                    'ContentType': body['type']
+                                                                    },
+                                                    ExpiresIn    = 3600
+                                                  ),
                   'name:': name
                  }
     except ClientError as e:

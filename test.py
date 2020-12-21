@@ -2,13 +2,36 @@
 import boto3
 import requests
 import json
+import requests
+import re
 
-def format_target_url(source)->str:
-    '''cleans up input url aka github.com returns https://github.com and invalid;url.com returns None'''
+def format_target_url(url)->str:
+    '''cleans up input url aka github.com returns https://github.com, return None if invalid url'''
+    regex = re.compile(r'(https?://)?(.*)')
+    match = regex.search(url)
+    if match:
+        url = match.group(2)
+    else:
+        return None
+
+    try: #first try https
+        requests.get('https://' + url)
+        return 'https://' + url
+    except:
+        try: # then try http
+            requests.get('http://' + url)
+            return 'http://' + url
+        except: # otherwise invalid
+            return None
+
+    return None
+
+
     
 def main():
     print(format_target_url('github.com'))
-    print(format_target_url('')
+    print(format_target_url('pstb.in/fuck'))
+    print(format_target_url('sdfjslkdf;;ljaw;ljf'))
     # s3 = boto3.client('s3')
     # bucket = boto3.resource('s3').Bucket('www.pstb.in')
     # print(sum(1 for _ in bucket.objects.filter(Delimiter='/'))) # counts number of objects in root of bucket
