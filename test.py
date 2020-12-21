@@ -5,6 +5,25 @@ import json
 import requests
 import re
 
+def get_id_length(folder = '')->int:
+    '''calculates an id length recommendation based on bucket capacity'''
+    bucket = boto3.resource('s3').Bucket('www.pstb.in')
+    if folder:
+        capacity = sum(1 for _ in bucket.objects.filter(Prefix= folder + '/')) # counts number of objects in a specified folder
+    else:
+        capacity = sum(1 for _ in bucket.objects.filter(Delimiter='/')) # counts number of objects in root of bucket
+    print(capacity)
+    capacity = 100000
+    recommended_length = 8
+    # C^R(n,r) = (n+r-1)!/r!(n-1)!  , where there are n=26 letters + 10 integers and r = length
+    max_capacities = [666, 8426, 82251, 658008]
+    for index, max_capacity in enumerate(max_capacities):
+        if capacity < max_capacity//2: #keep bucket under half of maximum capacity
+            recommended_length = index + 2
+            break
+
+    return recommended_length
+
 def format_target_url(url)->str:
     '''cleans up input url aka github.com returns https://github.com, return None if invalid url'''
     regex = re.compile(r'(https?://)?(.*)')
@@ -29,9 +48,7 @@ def format_target_url(url)->str:
 
     
 def main():
-    print(format_target_url('github.com'))
-    print(format_target_url('pstb.in/fuck'))
-    print(format_target_url('sdfjslkdf;;ljaw;ljf'))
+    print(get_id_length())
     # s3 = boto3.client('s3')
     # bucket = boto3.resource('s3').Bucket('www.pstb.in')
     # print(sum(1 for _ in bucket.objects.filter(Delimiter='/'))) # counts number of objects in root of bucket

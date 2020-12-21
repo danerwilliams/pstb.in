@@ -13,8 +13,14 @@
         {
             "Effect": "Allow",
             "Principal": "*",
-            "Action": "s3:PutObject",
-            "Resource": "arn:aws:s3:::pstbin/*"
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::www.pstb.in"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::www.pstb.in/*"
         }
     ]
 }

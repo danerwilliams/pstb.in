@@ -5,12 +5,9 @@ import logging
 import random
 import string
 import re
-import requests
 import boto3
 from botocore.exceptions import ClientError
 from chalice import Chalice
-
-
 
 ########################
 # Globals
@@ -25,17 +22,19 @@ s3 = boto3.client('s3')
 def get_id_length(folder = '')->int:
     '''calculates an id length recommendation based on bucket capacity'''
     bucket = boto3.resource('s3').Bucket('www.pstb.in')
+
     if folder:
         capacity = sum(1 for _ in bucket.objects.filter(Prefix= folder + '/')) # counts number of objects in a specified folder
     else:
         capacity = sum(1 for _ in bucket.objects.filter(Delimiter='/')) # counts number of objects in root of bucket
-
+    print('capacity', capacity)
     recommended_length = 8
     # C^R(n,r) = (n+r-1)!/r!(n-1)!  , where there are n=26 letters + 10 integers and r = length
     max_capacities = [666, 8436, 82251, 658008, 4496388, 26978328]
-    for max_capacity, index in enumerate(max_capacities):
+    for index, max_capacity in enumerate(max_capacities):
         if capacity < max_capacity//2: #keep bucket under half of maximum capacity
             recommended_length = index + 2
+            break
 
     return recommended_length
 
@@ -53,15 +52,7 @@ def format_target_url(url)->str:
     else:
         return None
 
-    try: #first try https
-        requests.get('https://' + url)
-        return 'https://' + url
-    except:
-        try: # then try http
-            requests.get('http://' + url)
-            return 'http://' + url
-        except: # otherwise invalid
-            return None
+    return 'http://' + url
 
 
 ########################
@@ -75,11 +66,20 @@ def get_shortened_url():
 
     # randomly generate new id until one is available
     length = get_id_length() # url redirect objects are stored in top level folder of bucket
+    print('length', length)
     short = get_random_id(length)
 
+    target_url = format_target_url(body)
+    if not target_url:
+        return {'statusCode': 69, 'body': {'error': 'invalid url'}}
+
     with open('/tmp/totally_arbitrary_file', 'w') as _:
-        response = s3.upload_file('/tmp/test', 'www.pstb.in', short, ExtraArgs = {'WebsiteRedirectLocation': body})
-    return {'body': body}
+        try:
+            s3.upload_file('/tmp/totally_arbitrary_file', 'www.pstb.in', short, ExtraArgs = {'WebsiteRedirectLocation': target_url})
+        except:
+            return {'statusCode': 69, 'body': {'error': 'invalid url'}} 
+
+    return {'statusCode': 200, 'body': {'url': 'pstb.in/' + short}}
 
 @app.route('/upload', methods=['POST'], cors=True)
 def get_s3_presigned_url():
@@ -130,23 +130,3 @@ def get_s3_presigned_url():
 
     return response
 
-
-# The view function above will return {"hello": "world"}
-# whenever you make an HTTP GET request to '/'.
-#
-# Here are a few more examples:
-#
-# @app.route('/hello/{name}')
-# def hello_name(name):
-#    # '/hello/james' -> {"hello": "james"}
-#    return {'hello': name}
-#
-# @app.route('/users', methods=['POST'])
-# def create_user():
-#     # This is the JSON body the user sent in their POST request.
-#     user_as_json = app.current_request.json_body
-#     # We'll echo the json body back to the user in a 'user' key.
-#     return {'user': user_as_json}
-#
-# See the README documentation for more examples.
-#
