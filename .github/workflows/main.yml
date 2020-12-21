@@ -20,7 +20,7 @@ jobs:
           with:
             folder: build
             bucket: 'dane-test-bucket'
-            bucket-region: us-west-1
+            bucket-region: 'us-west-1'
             invalidation: /
             delete-removed: true
             private: true
