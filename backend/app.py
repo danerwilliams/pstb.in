@@ -98,7 +98,6 @@ def get_shortened_url():
 def get_s3_presigned_url():
     '''returns the presigned url for uploading file to the s3 bucket'''
     body = app.current_request.json_body
-
     length = get_id_length('f') # pasted files are stored in the f folder of bucket
     while True:
         name = get_random_id(length) 

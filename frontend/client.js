@@ -5,8 +5,12 @@ const api = 'https://ez02ob0o22.execute-api.us-west-1.amazonaws.com/api/'
 /* Submit handler */
 function submitHandler() {
     const url = document.getElementById('target_url').value;
-    const file = document.getElementById('target_file').value;
-    console.log(file);
+    const file = document.getElementById('target_file').files[0];
+
+    if (file['size'] > 5000000) { //maximum 5 mb allowed
+        displayUrl('5 mb maximum upload size');
+        return
+    }
 
     if (!url && file)
         getPresignedUrl(file);
@@ -18,19 +22,30 @@ function submitHandler() {
 
 /* Get shortened url */
 function shortenUrl(target_url) {
-    // const target_url = document.getElementById('target_url').value;
     fetch(api + 'shorten', {method: 'POST', mode: 'cors', body: target_url})
         .then(response => response.json())
         .then(response => displayUrl(response['body']['url']));
 }
 
 /* Get presigned url for file upload */
-function getPresignedUrl() {
-    
+function getPresignedUrl(file) {
+    fetch(api + 'upload', {method: 'POST', 
+                           mode: 'cors', 
+                           headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                           },
+                           body: JSON.stringify({
+                                'type': file['type'],
+                                'name': file['name']
+                           })
+                           })
+        .then(response => response.json())
+        .then(response => uploadFile(response));
 }
 
 /* Upload file */
-function uploadFile() {
+function uploadFile(response) {
 
 }
 
