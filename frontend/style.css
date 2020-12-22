@@ -12,6 +12,33 @@ body {
     max-width: 45%;
 }
 
+
+.modal-content {
+    background-color: #282a36;
+}
+
+.modal-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+code {
+    color: #6272a4;
+    font-size: 20px;
+}
+
+.code-wrapper {
+    margin: 8px;
+}
+
+.copy-wrapper {
+    margin: 8px;
+    display: flex;
+    justify-content: center;
+}
+
 .btn-wrapper {
     margin: 24px;
     display: flex;
@@ -41,4 +68,21 @@ body {
 }
 .btn:hover {
     background-color: #ab74f8;
+}
+
+.btn-copy {
+    background-color: #282a36;
+    color: #6272a4;
+    border: none;
+    width: 24px;
+    height: 24px; 
+    font-size: 24px;
+    border-radius: 4px; 
+    padding: 0;
+    margin: 0 auto;
+    text-align: center;
+}
+.btn-copy:hover {
+    background-color: #282a36;
+    color: #44475a; 
 }
