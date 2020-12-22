@@ -41,12 +41,21 @@ function getPresignedUrl(file) {
                            })
                            })
         .then(response => response.json())
-        .then(response => uploadFile(response));
+        .then(response => uploadFile(response, file));
 }
 
 /* Upload file */
-function uploadFile(response) {
-
+function uploadFile(presigned_response, file) {
+    fetch(presigned_response['body']['signed_url'], {method: 'PUT',
+                                           mode: 'cors',
+                                           headers: {
+                                               'Content-Type': file['type']
+                                           },
+                                           body: file
+                                          })
+        .then(response => response.text())
+        .then(response => console.log(response));
+    displayUrl(presigned_response['body']['url']);
 }
 
 /* Displays shortened url */
