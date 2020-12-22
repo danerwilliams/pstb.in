@@ -11,7 +11,7 @@
 
         <!-- Url input -->
         <div class="container-sm url-wrapper">
-            <input class="form-control form-control-lg" type="text" placeholder="Long URL">
+            <input class="form-control form-control-lg" type="text" placeholder="Long URL" id="target_url">
         </div>
 
         <!-- File selection -->
@@ -21,7 +21,7 @@
 
         <!-- Submit button (triggers modal popup) -->
         <div class="container-sm btn-wrapper" data-bs-toggle="modal" data-bs-target="#popup">
-            <button type="button" class="btn btn-primary btn-lg">pst</button>
+            <button type="button" class="btn btn-primary btn-lg" onclick="shortenUrl()">pst</button>
         </div>
 
         <!-- Modal -->
@@ -30,7 +30,7 @@
                 <div class="modal-content">
                     <div class="modal-body">
                         <div class="code-wrapper">
-                            <code id="short_url">pstb.in/exmpl</code>
+                            <code id="short_url"></code>
                         </div>
                         <div class="copy-wrapper">
                             <button type="button" class="btn btn-copy" onclick="copyUrl()">
