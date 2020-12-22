@@ -9,6 +9,7 @@ import boto3
 from botocore.exceptions import ClientError
 from chalice import Chalice
 
+
 ########################
 # Globals
 ########################
