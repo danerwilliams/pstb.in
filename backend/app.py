@@ -59,7 +59,7 @@ def format_target_url(url)->str:
 ########################
 # API Routes
 ########################
-@app.route('/shorten', methods=['POST'], cors=True, content_types=['application/x-www-form-urlencoded'])
+@app.route('/shorten', methods=['POST'], cors=True, content_types=['application/x-www-form-urlencoded', 'text/plain'])
 def get_shortened_url():
     '''returns shortened url for the desired '''
     # post request data
@@ -84,7 +84,15 @@ def get_shortened_url():
         except:
             return {'statusCode': 69, 'body': {'error': 'invalid url'}} 
 
-    return {'statusCode': 200, 'body': {'url': 'pstb.in/' + short}}
+    return {
+            'statusCode': 200, 
+            'headers': {
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS, POST, PUT'
+                       },
+            'body': {'url': 'pstb.in/' + short}
+           }
 
 @app.route('/upload', methods=['POST'], cors=True)
 def get_s3_presigned_url():
