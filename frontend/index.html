@@ -7,15 +7,34 @@
   </head>
   <body>
     <div class="container">
+
+        <!-- Url input -->
         <div class="container-sm url-wrapper">
             <input class="form-control form-control-lg" type="text" placeholder="Long URL">
         </div>
+
+        <!-- File selection -->
         <div class="container-sm file-wrapper">
             <input class="form-control form-control-lg" id="formFileLg" type="file">
         </div>
-        <div class="container-sm btn-wrapper">
+
+        <!-- Submit button (triggers modal popup) -->
+        <div class="container-sm btn-wrapper" data-bs-toggle="modal" data-bs-target="#popup">
             <button type="button" class="btn btn-primary btn-lg">pst</button>
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="popup" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <code id="short_url">shortened url here</code>
+                        <button onclick="copyUrl()">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
   </body>
 </html>
