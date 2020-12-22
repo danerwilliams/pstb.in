@@ -11,12 +11,30 @@ body {
     max-width: 45%;
 }
 
+.btn-wrapper {
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.file-wrapper {
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.url-wrapper {
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+}
+
 .btn {
     background-color: #bd93f9;
     color: #f8f8f2;
     border: none;
-    width: 200px;
-    height: 60px; 
+    width: 240px;
+    height: 70px; 
     font-size: 24px;
 }
 .btn:hover {
