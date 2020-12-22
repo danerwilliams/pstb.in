@@ -11,17 +11,17 @@
 
         <!-- Url input -->
         <div class="container-sm url-wrapper">
-            <input class="form-control form-control-lg" type="text" placeholder="Long URL" id="target_url">
+            <input class="form-control form-control-lg" type="text" placeholder="pst url (30 day expiration, 7 for files)" id="target_url">
         </div>
 
         <!-- File selection -->
         <div class="container-sm file-wrapper">
-            <input class="form-control form-control-lg" id="formFileLg" type="file">
+            <input class="form-control form-control-lg" id="target_file" type="file">
         </div>
 
         <!-- Submit button (triggers modal popup) -->
         <div class="container-sm btn-wrapper" data-bs-toggle="modal" data-bs-target="#popup">
-            <button type="button" class="btn btn-primary btn-lg" onclick="shortenUrl()">pst</button>
+            <button type="button" class="btn btn-primary btn-lg" onclick="submitHandler()">pst</button>
         </div>
 
         <!-- Modal -->
