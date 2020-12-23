@@ -17,6 +17,17 @@ from chalice import Chalice
 app = Chalice(app_name='pstbin')
 app.api.binary_types.append('multipart/form-data')
 s3 = boto3.client('s3')
+mimetypes = {
+    'jpeg': 'image/jpeg',
+    'jpg': 'image/jpeg',
+    'png': 'image/png',
+    'gif': 'image/gif',
+    'bmp': 'image/bmp',
+    'tiff': 'image/tiff',
+    'txt': 'text/plain',
+    'pdf': 'application/pdf'
+}
+
 
 
 #########################
@@ -109,22 +120,28 @@ def get_shortened_url():
 def upload_file():
     '''returns shortened url for the desired '''
     body = parse_file(app.current_request)
-    print(body)
+    source_name = body['name'][0].decode('utf-8')
     # randomly generate new id until one is available
     length = get_id_length('f') # pasted files are stored in the f folder of bucket
+    extension = source_name.split('.')[1]
     while True:
         name = get_random_id(length) 
-        if '.' in body['name']:
-            name += '.' + body['name'].split('.')[1]
+        if '.' in source_name:
+            name += '.' + extension
         try: # name is already used
             boto3.resource('s3').Object('www.pstb.in', name).load()
         except ClientError as e: # name hasn't been used yet
             break
 
+    global mimetypes
+    type = 'binary/octet-stream' #default type
+    if extension in mimetypes:
+        type = mimetypes[extension]
+
     with open('/tmp/' + name, 'wb') as f:
         f.write(body['file'][0])
         try:
-            s3.upload_file('/tmp/' + name, 'www.pstb.in', 'f/' + name)
+            s3.upload_file('/tmp/' + name, 'www.pstb.in', 'f/' + name, ExtraArgs = {'ContentType': type})
         except:
             return {'statusCode': 69, 'body': {'error': 'failed to upload file'}} 
 
