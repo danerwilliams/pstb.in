@@ -1,7 +1,8 @@
 ######################
 # Imports
 ######################
-import logging
+import cgi
+from io import BytesIO
 import random
 import string
 import re
@@ -14,6 +15,7 @@ from chalice import Chalice
 # Globals
 ########################
 app = Chalice(app_name='pstbin')
+app.api.binary_types.append('multipart/form-data')
 s3 = boto3.client('s3')
 
 
@@ -55,6 +57,15 @@ def format_target_url(url)->str:
 
     return 'http://' + url
 
+def parse_file(request):
+    '''Parses out file from multipart/form-data file upload in post request'''
+    rfile = BytesIO(request.raw_body)
+    content_type = request.headers['content-type']
+    _, parameters = cgi.parse_header(content_type)
+    parameters['boundary'] = parameters['boundary'].encode('utf-8')
+    parsed = cgi.parse_multipart(rfile, parameters)
+    return parsed
+
 
 ########################
 # API Routes
@@ -94,10 +105,12 @@ def get_shortened_url():
             'body': {'url': 'pstb.in/' + short}
            }
 
-@app.route('/upload', methods=['POST'], cors=True)
-def get_s3_presigned_url():
-    '''returns the presigned url for uploading file to the s3 bucket'''
-    body = app.current_request.json_body
+@app.route('/upload', methods=['POST'], cors=True, content_types=['multipart/form-data'])
+def upload_file():
+    '''returns shortened url for the desired '''
+    body = parse_file(app.current_request)
+    print(body)
+    # randomly generate new id until one is available
     length = get_id_length('f') # pasted files are stored in the f folder of bucket
     while True:
         name = get_random_id(length) 
@@ -108,40 +121,20 @@ def get_s3_presigned_url():
         except ClientError as e: # name hasn't been used yet
             break
 
-    try: 
-        result = {
-                  'signed_url': s3.generate_presigned_url(
-                                                    ClientMethod = 'put_object',
-                                                    Params       = {
-                                                                    'Bucket': 'www.pstb.in',
-                                                                    'Key': 'f/' + name,
-                                                                    'ContentType': body['type']
-                                                                    },
-                                                    ExpiresIn    = 3600
-                                                  ),
-                  'url': 'pstb.in/f/' + name
-                 }
-    except ClientError as e:
-        result = {"error": "could not generate s3 presigned url"}
-        response = {
-                    'statusCode': 69,
-                    'headers': {
-                                'Access-Control-Allow-Headers': 'Content-Type',
-                                'Access-Control-Allow-Origin': '*',
-                                'Access-Control-Allow-Methods': 'OPTIONS, POST, PUT'
-                               },
-                    'body': result
-                   }
+    with open('/tmp/' + name, 'wb') as f:
+        f.write(body['file'][0])
+        try:
+            s3.upload_file('/tmp/' + name, 'www.pstb.in', 'f/' + name)
+        except:
+            return {'statusCode': 69, 'body': {'error': 'failed to upload file'}} 
 
-    response = {
-                'statusCode': 200,
-                'headers': {
-                            'Access-Control-Allow-Headers': 'Content-Type',
-                            'Access-Control-Allow-Origin': '*',
-                            'Access-Control-Allow-Methods': 'OPTIONS, POST, PUT'
-                           },
-                'body': result
-               }
-
-    return response
+    return {
+            'statusCode': 200, 
+            'headers': {
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'OPTIONS, POST, PUT'
+                       },
+            'body': {'url': 'pstb.in/f/' + name}
+           }
 
