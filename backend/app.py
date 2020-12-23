@@ -82,7 +82,7 @@ def get_shortened_url():
         try:
             s3.upload_file('/tmp/totally_arbitrary_file', 'www.pstb.in', short, ExtraArgs = {'WebsiteRedirectLocation': target_url, 'Tagging': 'url'})
         except:
-            return {'statusCode': 69, 'body': {'error': 'invalid url'}} 
+            return {'statusCode': 69, 'body': {'error': 'failed to shorten url'}} 
 
     return {
             'statusCode': 200, 
