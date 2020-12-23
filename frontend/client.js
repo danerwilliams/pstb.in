@@ -33,8 +33,8 @@ function uploadFile(file) {
     formData.append('name', file['name']);
     formData.append('file', file);
     fetch(api + 'upload', {method: 'POST', mode: 'cors', body: formData})
-        .then(response => response.text())
-        .then(response => displayUrl(response['body']['url'])); //displayUrl(response['body']['url']));
+        .then(response => response.json())
+        .then(response => displayUrl(response['body']['url']));
 }
 
 /* Displays shortened url */
