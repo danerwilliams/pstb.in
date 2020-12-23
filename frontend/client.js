@@ -34,7 +34,7 @@ function uploadFile(file) {
     formData.append('file', file);
     fetch(api + 'upload', {method: 'POST', mode: 'cors', body: formData})
         .then(response => response.text())
-        .then(response => console.log(response)); //displayUrl(response['body']['url']));
+        .then(response => displayUrl(response['body']['url'])); //displayUrl(response['body']['url']));
 }
 
 /* Displays shortened url */
