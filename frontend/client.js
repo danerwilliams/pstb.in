@@ -13,7 +13,7 @@ function submitHandler() {
     }
 
     if (!url && file)
-        getPresignedUrl(file);
+        uploadFile(file)
     else if (url && !file)
         shortenUrl(url);
     else
@@ -27,35 +27,14 @@ function shortenUrl(target_url) {
         .then(response => displayUrl(response['body']['url']));
 }
 
-/* Get presigned url for file upload */
-function getPresignedUrl(file) {
-    fetch(api + 'upload', {method: 'POST', 
-                           mode: 'cors', 
-                           headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                           },
-                           body: JSON.stringify({
-                                'type': file['type'],
-                                'name': file['name']
-                           })
-                           })
-        .then(response => response.json())
-        .then(response => uploadFile(response, file));
-}
-
 /* Upload file */
-function uploadFile(presigned_response, file) {
-    fetch(presigned_response['body']['signed_url'], {method: 'PUT',
-                                           mode: 'cors',
-                                           headers: {
-                                               'Content-Type': file['type']
-                                           },
-                                           body: file
-                                          })
+function uploadFile(file) {
+    const formData = new FormData();
+    formData.append('name', file['name']);
+    formData.append('file', file);
+    fetch(api + 'upload', {method: 'POST', mode: 'cors', body: formData})
         .then(response => response.text())
-        .then(response => console.log(response));
-    displayUrl(presigned_response['body']['url']);
+        .then(response => console.log(response)); //displayUrl(response['body']['url']));
 }
 
 /* Displays shortened url */

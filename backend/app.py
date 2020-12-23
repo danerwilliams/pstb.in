@@ -119,11 +119,12 @@ def get_shortened_url():
 @app.route('/upload', methods=['POST'], cors=True, content_types=['multipart/form-data'])
 def upload_file():
     '''returns shortened url for the desired '''
-    body = parse_file(app.current_request)
-    source_name = body['name'][0].decode('utf-8')
+    body = parse_file(app.current_request)    
+    source_name = body['name'][0]
+
     # randomly generate new id until one is available
     length = get_id_length('f') # pasted files are stored in the f folder of bucket
-    extension = source_name.split('.')[1]
+    extension = source_name.split('.')[-1]
     while True:
         name = get_random_id(length) 
         if '.' in source_name:
@@ -133,6 +134,7 @@ def upload_file():
         except ClientError as e: # name hasn't been used yet
             break
 
+    # Get mimetypes if common filetype to be displayed in browser
     global mimetypes
     type = 'binary/octet-stream' #default type
     if extension in mimetypes:
