@@ -1,6 +1,3 @@
-chat.db*
 __pycache__/
 /backend/.chalice/deployments
 /backend/.chalice/deployed
-/frontend/node_modules
-/frontend/.cache
