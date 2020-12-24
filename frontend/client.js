@@ -12,6 +12,18 @@ function keydownHandler(down) {
     }
 }
 
+/* swap loading icon/message */
+function loading() {
+
+    // get elements we need to update
+    const field = document.getElementById('short_url');
+    const icon = document.getElementById('icon');
+
+    // update them
+    field.innerHTML = 'Loading...';
+    icon.innerHTML = '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>';
+}
+
 /* Submit handler */
 function submitHandler() {
     const url = document.getElementById('target_url').value;
@@ -22,12 +34,17 @@ function submitHandler() {
         return
     }
 
-    if (!url && file)
+    if (!url && file) {
+        loading();
         uploadFile(file);
-    else if (url && !file)
+    }
+    else if (url && !file) {
+        loading();
         shortenUrl(url);
-    else
+    }
+    else {
         displayUrl('enter either a file or url');
+    }
 }
 
 /* Get shortened url */
@@ -50,7 +67,10 @@ function uploadFile(file) {
 /* Displays shortened url */
 function displayUrl(url){
     const code_html = document.getElementById('short_url');
+    const copy_icon = document.getElementById('icon');
+
     code_html.innerHTML = '<a href=\"http://' + url + '\" style=\"color: #6272a4; text-decoration: none;\">' + url + '</a>';
+    copy_icon.innerHTML = '<i class="far fa-copy"></i>';
 }
 
 /* Copies shortened url */
