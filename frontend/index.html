@@ -11,7 +11,7 @@
 
         <!-- Url input -->
         <div class="container-sm url-wrapper">
-            <input class="form-control form-control-lg" type="text" placeholder="pst url (30 day expiration, 7 for files)" id="target_url">
+            <input class="form-control form-control-lg" type="text" placeholder="pst url (30 day expiration, 7 for files)" id="target_url" onkeydown="keydownHandler(event)">
         </div>
 
         <!-- File selection -->
@@ -21,7 +21,7 @@
 
         <!-- Submit button (triggers modal popup) -->
         <div class="container-sm btn-wrapper" data-bs-toggle="modal" data-bs-target="#popup">
-            <button type="button" class="btn btn-primary btn-lg" onclick="submitHandler()">pst</button>
+            <button type="button" class="btn btn-primary btn-lg" id="button" onclick="submitHandler()">pst</button>
         </div>
 
         <!-- Modal -->
