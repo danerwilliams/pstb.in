@@ -40,9 +40,8 @@ function uploadFile(file) {
 /* Displays shortened url */
 function displayUrl(url){
     const code_html = document.getElementById('short_url');
-    code_html.innerHTML = url;
+    code_html.innerHTML = '<a href=\"http://' + url + '\" style=\"color: #6272a4\">' + url + '</a>';
 }
-
 
 /* Copies shortened url */
 function copyUrl() {
