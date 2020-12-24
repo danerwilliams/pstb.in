@@ -2,6 +2,16 @@
 // Lambda API Endpoint
 const api = 'https://ez02ob0o22.execute-api.us-west-1.amazonaws.com/api/'
 
+/* keydown handler */
+function keydownHandler(down) {
+    if (down.keyCode === 13) { // enter is keycode 13 in ASCII
+
+        // click the button that would normally trigger the modal and call submitHandler()
+        // not the world's most elegant solution, but couldn't figure out how to do it from the HTML side...
+        document.getElementById('button').click();
+    }
+}
+
 /* Submit handler */
 function submitHandler() {
     const url = document.getElementById('target_url').value;
@@ -13,7 +23,7 @@ function submitHandler() {
     }
 
     if (!url && file)
-        uploadFile(file)
+        uploadFile(file);
     else if (url && !file)
         shortenUrl(url);
     else
