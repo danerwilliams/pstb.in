@@ -9,7 +9,8 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    max-width: 45%;
+    max-width: 1080px;
+    min-width: 45%;
 }
 
 
