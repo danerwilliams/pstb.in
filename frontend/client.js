@@ -1,6 +1,6 @@
 
 // Lambda API Endpoint
-const api = 'https://ez02ob0o22.execute-api.us-west-1.amazonaws.com/api/'
+const api = 'https://ttt6rmwb3a.execute-api.us-west-1.amazonaws.com/api/'
 
 /* keydown handler */
 function keydownHandler(down) {
