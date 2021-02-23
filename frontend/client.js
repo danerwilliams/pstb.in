@@ -29,8 +29,8 @@ function submitHandler() {
     const url = document.getElementById('target_url').value;
     const file = document.getElementById('target_file').files[0];
 
-    if (file && file['size'] > 5000000) { //maximum 5 mb allowed
-        displayUrl('5 mb maximum upload size');
+    if (file && file['size'] > 15000000) { //maximum 5 mb allowed
+        displayUrl('15 mb maximum upload size');
         return
     }
 
