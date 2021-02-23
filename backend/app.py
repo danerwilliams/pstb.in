@@ -144,8 +144,8 @@ def upload_file():
 
     with open('/tmp/' + name, 'wb') as f:
         f.write(body['file'][0])
-        if os.path.getsize('/tmp/' + name) > 15000000:
-            return {'statusCode': 69, 'body': {'error': 'file size may not exceed 15mb'}}
+        if os.path.getsize('/tmp/' + name) > 4000000:
+            return {'statusCode': 69, 'body': {'error': 'file size may not exceed 4 mb'}}
         try:
             s3.upload_file('/tmp/' + name, 'www.pstb.in', 'f/' + name, ExtraArgs = {'ContentType': type})
         except:

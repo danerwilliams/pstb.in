@@ -29,8 +29,8 @@ function submitHandler() {
     const url = document.getElementById('target_url').value;
     const file = document.getElementById('target_file').files[0];
 
-    if (file && file['size'] > 15000000) { //maximum 5 mb allowed
-        displayUrl('15 mb maximum upload size');
+    if (file && file['size'] > 4000000) { //maximum 4 mb allowed
+        displayUrl('4 mb maximum upload size');
         return
     }
 
@@ -49,8 +49,6 @@ function submitHandler() {
 
 /* Get shortened url */
 function shortenUrl(target_url) {
-    console.log("fuck");
-    console.log(api);
     fetch(api + 'shorten', {method: 'POST', mode: 'cors', body: target_url})
         .then(response => response.json())
         .then(response => displayUrl(response['body']['url']));
