@@ -49,6 +49,7 @@ function submitHandler() {
 
 /* Get shortened url */
 function shortenUrl(target_url) {
+    console.log(api);
     fetch(api + 'shorten', {method: 'POST', mode: 'cors', body: target_url})
         .then(response => response.json())
         .then(response => displayUrl(response['body']['url']));

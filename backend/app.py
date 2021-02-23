@@ -87,6 +87,7 @@ def get_shortened_url():
     '''returns shortened url for the desired '''
     # post request data
     body = app.current_request.raw_body.decode("utf-8")
+    print("fuck you" + body)
 
     # randomly generate new id until one is available
     length = get_id_length() # url redirect objects are stored in top level folder of bucket
