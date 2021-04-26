@@ -1,6 +1,6 @@
 
 // Lambda API Endpoint
-const api = 'https://ttt6rmwb3a.execute-api.us-west-1.amazonaws.com/api/'
+const api = 'https://6gguwty3k1.execute-api.us-west-1.amazonaws.com/api/'
 
 /* keydown handler */
 function keydownHandler(down) {
@@ -51,7 +51,10 @@ function submitHandler() {
 function shortenUrl(target_url) {
     fetch(api + 'shorten', {method: 'POST', mode: 'cors', body: target_url})
         .then(response => response.json())
-        .then(response => displayUrl(response['body']['url']));
+        .then(response => {
+            console.log(response);
+            displayUrl(response['body']['url']);
+        });
 }
 
 /* Upload file */

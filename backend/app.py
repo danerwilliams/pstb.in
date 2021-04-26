@@ -87,12 +87,12 @@ def get_shortened_url():
     '''returns shortened url for the desired '''
     # post request data
     body = app.current_request.raw_body.decode("utf-8")
-    print("fuck you" + body)
 
     # randomly generate new id until one is available
     length = get_id_length() # url redirect objects are stored in top level folder of bucket
     while True:
         short = get_random_id(length)
+        print(short)
         try: # name is already used
             boto3.resource('s3').Object('www.pstb.in', short).load()
         except ClientError as e: # name hasn't been used yet
@@ -103,10 +103,13 @@ def get_shortened_url():
         return {'statusCode': 69, 'body': {'error': 'invalid url'}}
 
     with open('/tmp/totally_arbitrary_file', 'w') as _:
-        try:
-            s3.upload_file('/tmp/totally_arbitrary_file', 'www.pstb.in', short, ExtraArgs = {'WebsiteRedirectLocation': target_url, 'Tagging': 'url'})
-        except:
-            return {'statusCode': 69, 'body': {'error': 'failed to shorten url'}} 
+       # try:
+       #     print(short)
+       s3.upload_file('/tmp/totally_arbitrary_file', 'www.pstb.in', 'u/' + short, ExtraArgs = {'WebsiteRedirectLocation': target_url, 'Tagging': 'url'})
+      #      print(fuck)
+        # except:
+        #     print("jesus fucking christ")
+        #     return {'statusCode': 69, 'body': {'error': 'failed to shorten url'}} 
 
     return {
             'statusCode': 200, 
