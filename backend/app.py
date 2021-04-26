@@ -103,13 +103,10 @@ def get_shortened_url():
         return {'statusCode': 69, 'body': {'error': 'invalid url'}}
 
     with open('/tmp/totally_arbitrary_file', 'w') as _:
-       # try:
-       #     print(short)
-       s3.upload_file('/tmp/totally_arbitrary_file', 'www.pstb.in', 'u/' + short, ExtraArgs = {'WebsiteRedirectLocation': target_url, 'Tagging': 'url'})
-      #      print(fuck)
-        # except:
-        #     print("jesus fucking christ")
-        #     return {'statusCode': 69, 'body': {'error': 'failed to shorten url'}} 
+        try:
+            s3.upload_file('/tmp/totally_arbitrary_file', 'www.pstb.in', short, ExtraArgs = {'Tagging': 'url', 'WebsiteRedirectLocation': target_url})
+        except:
+            return {'statusCode': 69, 'body': {'error': 'failed to shorten url'}} 
 
     return {
             'statusCode': 200, 
